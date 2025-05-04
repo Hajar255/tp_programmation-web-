@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire PFE</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    form {
+            max-width: 500px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+      border-radius: 5px;
+    }
+    .envoyer {
+      background-color: green;
+    }
+    .annuler {
+      background-color: red;
+    }
+    #output {
+      margin-top: 30px;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+    }
+    .group-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Formulaire d'inscription PFE</h2>
+  <form id="pfeForm">
+    <label>Nom:
+      <input type="text" name="nom" required>
+    </label>
+    <label>Prénom:
+      <input type="text" name="prenom" required>
+    </label>
+
+    <label>Groupe:</label>
+    <div class="group-controls">
+      <input type="number" id="groupe" name="groupe" value="1" min="1"> 
+      <button type="button" onclick="decrementGroup()">-</button>
+      <button type="button" onclick="incrementGroup()">+</button>
+    </div>
+
+    <label>Sujet:
+      <input type="text" name="sujet" required>
+    </label>
+
+    <label>Description:
+      <textarea name="description" rows="4" required></textarea>
+    </label>
+
+    <label>Date de début:
+      <input type="date" name="date_debut" required>
+    </label>
+
+    <label>Date de fin:
+      <input type="date" name="date_fin" required>
+    </label>
+
+    <label>Encadrement:
+      <select name="encadrant" required>
+        <option value="">-- Choisir un encadrant --</option>
+        <option value="Prof 1">Prof 1</option>
+        <option value="Prof 2">Prof 2</option>
+        <option value="Prof 3">Prof 3</option>
+      </select>
+    </label>
+
+    <div class="buttons">
+      <button type="submit" class="btn envoyer">Envoyer</button>
+      <button type="reset" class="btn annuler">Annuler</button>
+    </div>
+  </form>
+
+  <div id="output"></div>
+
+  <script>
+    function incrementGroup() {
+      const groupInput = document.getElementById('groupe');
+      groupInput.value = parseInt(groupInput.value) + 1;
+    }
+
+    function decrementGroup() {
+      const groupInput = document.getElementById('groupe');
+      if (parseInt(groupInput.value) > 1) {
+        groupInput.value = parseInt(groupInput.value) - 1;
+      }
+    }
+
+    document.getElementById('pfeForm').addEventListener('submit', function(e) {
+      e.preventDefault(); // Empêche le rechargement
+
+      const form = e.target;
+      const output = document.getElementById('output');
+
+      const data = {
+        Nom: form.nom.value,
+        Prénom: form.prenom.value,
+        Groupe: form.groupe.value,
+        Sujet: form.sujet.value,
+        Description: form.description.value,
+        "Date de début": form.date_debut.value,
+        "Date de fin": form.date_fin.value,
+        Encadrement: form.encadrant.value
+      };
+
+      let html = "<h3>Informations soumises :</h3><ul>";
+      for (let key in data) {
+        html += `<li><strong>${key}:</strong> ${data[key]}</li>`;
+      }
+      html += "</ul>";
+
+      output.innerHTML = html;
+    });
+  </script>
+
+</body>
+</html>

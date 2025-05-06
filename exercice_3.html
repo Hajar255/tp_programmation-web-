@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz JavaScript</title>
+</head>
+<body>
+    <h1>Quiz interactif</h1>
+    <button onclick="lancerQuiz()">Démarrer le Quiz</button>
+
+    <script>
+        const QUESTIONS = [
+            ["Quelle est la capitale de la France ?", "Paris"],
+            ["Combien de continents y a-t-il ?", "7"],
+            ["Quelle est la langue officielle du Brésil ?", "Portugais"]
+        ];
+
+        function lancerQuiz() {
+            let bonnesReponses = 0;
+
+            for (let i = 0; i < QUESTIONS.length; i++) {
+                let userReponse = prompt(QUESTIONS[i][0]);
+                if (userReponse && userReponse.trim().toLowerCase() === QUESTIONS[i][1].toLowerCase()) {
+                    alert("Réponse juste");
+                    bonnesReponses++;
+                } else {
+                    alert("Réponse fausse");
+                }
+            }
+
+            alert("Vous avez répondu correctement à " + bonnesReponses + " question(s) sur " + QUESTIONS.length);
+        }
+    </script>
+</body>
+</html>

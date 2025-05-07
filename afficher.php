@@ -1,18 +1,12 @@
 <?php
-require_once 'config.php'; 
+require_once 'config.php';
 
-if (isset($_POST['nom'], $_POST['email'], $_POST['password'], $_POST['dob'], $_POST['pays'], $_POST['terms'])) {
-    $nom = htmlspecialchars($_POST['nom']);
-    $email = htmlspecialchars($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
-    $dob = htmlspecialchars($_POST['dob']);
-    $pays = htmlspecialchars($_POST['pays']);
-    $stmt = $pdo->prepare("INSERT INTO utilisateurs (nonom_comple, email, mot_de_passe, date_naissance, pays) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$nom, $email, $password, $dob, $pays]);
-
-} else {
-    header('Location: index.php');
-    exit();
+// Récupérer la liste des utilisateurs
+try {
+    $stmt = $pdo->query("SELECT * FROM utilisateurs ORDER BY id DESC");
+    $utilisateurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Erreur lors de la récupération des utilisateurs : " . $e->getMessage());
 }
 ?>
 
@@ -20,21 +14,46 @@ if (isset($_POST['nom'], $_POST['email'], $_POST['password'], $_POST['dob'], $_P
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informations Inscription</title>
+    <title>Liste des Utilisateurs</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Merci pour votre inscription !</h1>
-        <p><strong>Nom complet :</strong> <?php echo $nom; ?></p>
-        <p><strong>Email :</strong> <?php echo $email; ?></p>
-        <p><strong>Date de naissance :</strong> <?php echo $dob; ?></p>
-        <p><strong>Pays :</strong> <?php echo $pays; ?></p>
+<div class="container">
+    <h1>Liste des Utilisateurs</h1>
 
-        <a href="index.php" class="btn" style="display: inline-block; margin-top: 20px;">Retour</a>
-    </div>
+    <a href="index.php" class="btn" style="margin-bottom: 20px;">Ajouter Nouveau</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom Complet</th>
+                <th>Email</th>
+                <th>Date de Naissance</th>
+                <th>Pays</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (count($utilisateurs) > 0): ?>
+                <?php foreach ($utilisateurs as $user): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($user['id']) ?></td>
+                        <td><?= htmlspecialchars($user['nom_complet']) ?></td>
+                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= htmlspecialchars($user['date_naissance']) ?></td>
+                        <td><?= htmlspecialchars($user['pays']) ?></td>
+                        <td>
+                            <a href="modifier.php?id=<?= $user['id'] ?>" class="btn">Modifier</a>
+                            <a href="supprimer.php?id=<?= $user['id'] ?>" class="btn cancel" onclick="return confirm('Voulez-vous vraiment supprimer ?')">Supprimer</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="6">Aucun utilisateur trouvé.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
-
-
